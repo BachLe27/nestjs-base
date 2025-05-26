@@ -1,0 +1,44 @@
+services:
+  # Application
+  app:
+    container_name: kochub-server
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    working_dir: /home/kochub/kochub-server
+    restart: unless-stopped
+    tty: true
+    env_file:
+      - ../.env
+    volumes:
+      - ../:/home/kochub/kochub-server
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - kochub-server-network
+    depends_on:
+      - db
+
+  # Database
+  db:
+    container_name: kochub-server-db
+    image: postgres:16-alpine
+    restart: unless-stopped
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - kochub-server-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  kochub-server-network:
+    driver: bridge

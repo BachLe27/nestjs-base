@@ -2,7 +2,7 @@
 
 
 DOCKER_DEV_COMPOSE_FILE = docker/docker-compose.yml
-APP_NAME = kochub-server
+APP_NAME = koc-hub-server
 # Default target
 help:
 	@echo "Available commands:"

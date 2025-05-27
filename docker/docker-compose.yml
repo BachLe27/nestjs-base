@@ -1,27 +1,29 @@
 services:
   # Application
   app:
-    container_name: kochub-server
+    container_name: koc-hub-server
     build:
       context: ../
       dockerfile: ./docker/Dockerfile
-    working_dir: /home/kochub/kochub-server
+    working_dir: /home/koc-hub/koc-hub-server
     restart: unless-stopped
     tty: true
     env_file:
       - ../.env
     volumes:
-      - ../:/home/kochub/kochub-server
+      - ../:/home/koc-hub/koc-hub-server
     ports:
       - ${PORT}:${PORT}
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}?schema=public
     networks:
-      - kochub-server-network
+      - koc-hub-server-network
     depends_on:
       - db
 
   # Database
   db:
-    container_name: kochub-server-db
+    container_name: koc-hub-server-db
     image: postgres:16-alpine
     restart: unless-stopped
     ports:
@@ -30,15 +32,17 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PORT: ${DB_PORT}
+    command: postgres -p ${DB_PORT}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     networks:
-      - kochub-server-network
+      - koc-hub-server-network
 
 volumes:
-  postgres_data:
+  postgres:
     driver: local
 
 networks:
-  kochub-server-network:
+  koc-hub-server-network:
     driver: bridge

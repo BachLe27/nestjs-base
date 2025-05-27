@@ -5,6 +5,7 @@ import { SwaggerModule } from '@nestjs/swagger';
 import { INestApplication, Logger } from '@nestjs/common';
 import { red } from 'colorette';
 import cookieParser from 'cookie-parser';
+import { AllExceptionsFilter } from './filter-exceptions';
 
 function setupSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
@@ -20,26 +21,18 @@ function setupSwagger(app: INestApplication) {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   const globalPrefix = 'api/v1';
   app.setGlobalPrefix(globalPrefix);
   setupSwagger(app);
 
-  const port = process.env.PORT || 3001;
+  const port = process.env.PORT || 3000;
 
   app.use(cookieParser());
   app.enableCors({
     credentials: true,
-    origin: [
-      'https://app.upcare.vn/',
-      'http://localhost:5173',
-      'https://staging.o2skin.asia',
-      'https://uat.o2skin.asia',
-      'https://o2skin.asia',
-      'https://data.o2skin.asia',
-      'https://beta.o2skin.asia',
-      'https://new.o2skin.asia',
-    ],
+    origin: ['http://localhost:5173'],
   });
 
   await app.listen(port);

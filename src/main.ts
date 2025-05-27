@@ -19,32 +19,41 @@ function setupSwagger(app: INestApplication) {
   SwaggerModule.setup('swagger', app, documentFactory);
 }
 
+const GLOBAL_PREFIX = 'api/v1';
+
+const PORT = process.env.PORT || 3000;
+
+const CORS_ORIGINS = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',')
+  : ['http://localhost:5173'];
+
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
   app.useGlobalFilters(new AllExceptionsFilter());
 
-  const globalPrefix = 'api/v1';
-  app.setGlobalPrefix(globalPrefix);
+  app.setGlobalPrefix(GLOBAL_PREFIX);
+
   setupSwagger(app);
 
-  const port = process.env.PORT || 3000;
-
   app.use(cookieParser());
+  
   app.enableCors({
     credentials: true,
-    origin: ['http://localhost:5173'],
+    origin: CORS_ORIGINS,
   });
 
-  await app.listen(port);
+  await app.listen(PORT);
 
   Logger.log(
     `🚀 Application is running on: ${red(
-      `http://localhost:${port}/${globalPrefix}`,
+      `http://localhost:${PORT}/${GLOBAL_PREFIX}`,
     )}`,
   );
   Logger.log(
     `🚀 Application Swagger is running on: ${red(
-      `http://localhost:${port}/swagger`,
+      `http://localhost:${PORT}/swagger`,
     )}`,
   );
 }

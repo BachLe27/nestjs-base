@@ -1,4 +1,3 @@
-// common/filters/http-exception.filter.ts
 import {
   ExceptionFilter,
   Catch,
@@ -8,17 +7,24 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
+const DEFAULT_ERROR = {
+  MESSAGE: 'Internal server error',
+  STATUS_CODE: HttpStatus.INTERNAL_SERVER_ERROR,
+  ERROR_CODE: 'UNKNOWN',
+};
+
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     console.log('exception', exception);
+
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message = 'Internal server error';
-    let errorCode = 'UNKNOWN';
+    let status = DEFAULT_ERROR.STATUS_CODE;
+    let message = DEFAULT_ERROR.MESSAGE;
+    let errorCode = DEFAULT_ERROR.ERROR_CODE;
 
     if (exception instanceof HttpException) {
       const res: any = exception.getResponse();

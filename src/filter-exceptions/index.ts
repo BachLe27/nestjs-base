@@ -1,2 +1,1 @@
-export * from './exception.filter';
-export * from './prisma-client-exception.filter';
+export * from './all-exception.filter';

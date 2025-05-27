@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { UsersRepository } from '../users/users.repository';
 import { Errors } from 'src/constants/error.constant';
-import { BaseException } from 'src/filter-exceptions/base.exception';
 import * as bcrypt from 'bcrypt';
-import { JwtPayloadModel } from '../models/jwt-payload.model';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { RefreshTokensService } from './refresh-tokens.service';
+import { JwtPayloadModel } from 'src/models';
+import { BaseException } from 'src/filter-exceptions/exceptions';
 
 @Injectable()
 export class AuthService {
@@ -75,7 +75,6 @@ export class AuthService {
       throw new BaseException(Errors.AUTH.WRONG_CREDENTIALS);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const checkPassword = await bcrypt.compare(plainPassword, user.password);
 
     if (!checkPassword) {

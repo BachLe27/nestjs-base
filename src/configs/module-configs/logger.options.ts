@@ -3,11 +3,5 @@ export const LoggerOptions: any = {
     customProps: () => ({
       context: 'HTTP',
     }),
-    // transport: {
-    //   target: "pino-pretty",
-    //   options: {
-    //     singleLine: false,
-    //   },
-    // },
   },
 };

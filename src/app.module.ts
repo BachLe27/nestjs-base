@@ -6,10 +6,25 @@ import { AuthController } from './modules/auth/auth.controller';
 import { UsersModule } from './modules/users/users.module';
 import { UsersController } from './modules/users/users.controller';
 import { UsersService } from './modules/users/users.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import appConfig from './configs/env/app.config';
+import { PrismaModule } from './prisma.module';
 
 @Module({
-  imports: [AuthModule, UsersModule],
+  imports: [
+    AuthModule,
+    UsersModule,
+    PrismaModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+      load: [
+        appConfig,
+        // larkConfig
+      ],
+    }),
+  ],
   controllers: [AppController, AuthController, UsersController],
-  providers: [AppService, UsersService],
+  providers: [AppService, UsersService, ConfigService],
 })
 export class AppModule {}

@@ -8,7 +8,7 @@ export class RefreshTokensService {
   async create(data: { userId: string; value: string }) {
     const res = await this.prisma.refreshToken.create({
       data: {
-        ...data,
+        userId: data.userId,
         token: data.value,
         expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
       },

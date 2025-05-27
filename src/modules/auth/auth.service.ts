@@ -22,7 +22,6 @@ export class AuthService {
     const { email, password } = loginDto;
 
     const user = await this.getAuthenticatedUser(email, password);
-
     const { accessToken, refreshToken } = await this.generateToken({
       id: user.id,
       email: user.email,
